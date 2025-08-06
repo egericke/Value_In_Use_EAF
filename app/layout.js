@@ -1,8 +1,8 @@
-import './globals.css';
+import '../globals.css';
 
 export const metadata = {
   title: 'EAF VIU Tool',
-  description: 'Value-in-Use Comparison for EAF Materials',
+  description: 'Hybrid App for EAF Material Comparison',
 };
 
 export default function RootLayout({ children }) {
