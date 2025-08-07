@@ -2,8 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.0%2B-red.svg)](https://streamlit.io/)
-[![Dependencies](https://img.shields.io/badge/Dependencies-pandas%20numpy%20matplotlib-green.svg)](requirements.txt)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2.3-black.svg)](https://nextjs.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0.3-red.svg)](https://flask.palletsprojects.com/)
 
 ## Table of Contents
 
@@ -32,7 +32,7 @@
 
 ## Introduction
 
-The **EAF Raw Material Value-in-Use (VIU) Model** is an open-source, Python-based tool designed to assist steelmakers, procurement specialists, and process engineers in optimizing raw material selection for Electric Arc Furnace (EAF) steelmaking. Built using Streamlit for an intuitive web-based interface, the model computes the holistic economic value of raw materials (e.g., scrap, DRI, pig iron, hot metal) by accounting for their downstream impacts on EAF operations. This goes beyond simple purchase prices to include process credits (e.g., energy from oxidation) and penalties (e.g., flux needs, yield losses, residual dilution).
+The **EAF Raw Material Value-in-Use (VIU) Model** is an open-source tool designed to assist steelmakers, procurement specialists, and process engineers in optimizing raw material selection for Electric Arc Furnace (EAF) steelmaking. Built with a Next.js frontend and a Python (Flask) backend, the model computes the holistic economic value of raw materials (e.g., scrap, DRI, pig iron, hot metal) by accounting for their downstream impacts on EAF operations. This goes beyond simple purchase prices to include process credits (e.g., energy from oxidation) and penalties (e.g., flux needs, yield losses, residual dilution).
 
 The tool enables side-by-side comparisons of two materials, with an optional blended summary, generating a tabular output similar to the provided example image. It is grounded in thermodynamic principles, mass and energy balances, and empirical data from steelmaking literature, making it a strategic asset for cost minimization while adhering to quality and operational constraints.
 
@@ -67,85 +67,100 @@ VIU transforms procurement from cost-minimization to value-maximization, enablin
 
 ## Features
 
-- **User-Friendly GUI:** Streamlit-based interface for adding materials, setting parameters, and visualizing comparisons.
+- **User-Friendly Web Interface:** A Next.js-based interface for adding materials, setting parameters, and visualizing comparisons.
 - **Material Database:** Dynamically add and store raw materials with detailed compositions (e.g., %Fe, %C, gangue oxides, residuals).
 - **Blended Summaries:** Compare two materials side-by-side with a weighted blend, auto-diluting for residuals using a prime feed (e.g., DRI).
-- **VIU Calculations:** Physics-based modeling of energy credits, flux/slag penalties, yield losses, oxygen costs, and residual dilutions.
-- **Output Table:** Mimics the provided image with color-coded credits (green) and penalties (red), plus metrics like yield %, slag volume, and residual %.
+- **VIU Calculations:** Physics-based modeling of energy credits, flux/slag penalties, yield losses, oxygen costs, and residual dilutions, all handled by a Python backend.
+- **Output Table:** Color-coded credits (green) and penalties (red), plus metrics like yield %, slag volume, and residual %.
 - **Customization:** Adjustable operational costs, targets (e.g., basicity, MgO saturation), and assumptions (e.g., preheating credits).
-- **Export and Visualization:** Download results as CSV; potential for charts (e.g., cost breakdowns).
-- **Validation:** Incorporates empirical models (e.g., Köhle's equation) for cross-checking predictions.
+- **Export and Visualization:** Potential for downloading results as CSV and adding charts for cost breakdowns.
+- **Validation:** Incorporates empirical models for cross-checking predictions.
 
 ## Installation
 
-This tool requires Python 3.8+ and runs via Streamlit. No additional installations beyond dependencies are needed for basic use.
+This tool requires Node.js and Python 3.8+.
 
 1. **Clone the Repository:**
    ```
-   git clone https://github.com/your-repo/eaf-viu-model.git
+    https://github.com/your-repo/eaf-viu-model.git
    cd eaf-viu-model
    ```
 
-2. **Install Dependencies:**
+2. **Install Frontend Dependencies:**
    Create a virtual environment (recommended):
    ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   npm install
+
    ```
    Install packages:
    ```
    pip install streamlit pandas numpy
    ```
 
-3. **Run the App:**
+3. **Install Backend Dependencies:**
+   Create a virtual environment (recommended):
    ```
-   streamlit run app.py  # Replace with your script name
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-   Open the provided URL (e.g., http://localhost:8501) in your browser.
+   Install packages:
 
-**System Requirements:** 
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. **Run the App:**
+   In one terminal, start the Next.js frontend:
+
+   ```
+   npm run dev
+   ```
+
+  In another terminal, start the Flask backend:
+   ```
+   flask --app api/app run
+   ```
+
+
+
+Open http://localhost:3000 in your browser.
+
+**System Requirements:**
 - OS: Windows, macOS, Linux.
 - RAM: 4GB+ for large datasets.
-- No internet required post-installation.
-
-If issues arise, check the [Troubleshooting](#troubleshooting) section below.
 
 ## Usage
 
 ### Running the Application
 
-After installation, launch with `streamlit run app.py`. The app opens in your browser with sections for parameters, material addition, and comparisons.
+After installation, launch the frontend and backend in separate terminals as described above. The app will be available at http://localhost:3000.
 
 ### Step-by-Step Guide
 
-1. **Set Operational Parameters (Sidebar):**
-   - Input costs (e.g., electricity $0.07/kWh), targets (e.g., max 0.10% Cu), and options (e.g., enable preheating).
-   - Define a prime diluent for residuals (e.g., DRI at $450/ton).
+1. **Set Operational Parameters:**
+- Input costs (e.g., electricity $0.07/kWh), targets (e.g., max 0.10% Cu), and options (e.g., enable preheating).
+- Define a prime diluent for residuals (e.g., DRI at $450/ton).
 
 2. **Add Raw Materials:**
-   - Use the form to input material details (name, price, % compositions, gangue, etc.).
-   - Add at least two (e.g., "Low-Cost Scrap" with high Cu, "Prime DRI" with low residuals).
+- Use the form to input material details (name, price, % compositions, gangue, etc.).
+- Add at least two (e.g., "Low-Cost Scrap" with high Cu, "Prime DRI" with low residuals).
 
 3. **Compare Materials:**
-   - Select two materials and a blend ratio (e.g., 50% each).
-   - Click "Compute VIU Summary" to generate the table.
+- Select two materials and a blend ratio (e.g., 50% each).
+- Click "Compute VIU Summary" to generate the table.
 
 4. **Interpret Results:**
-   - The table shows columns for each material and the blend.
-   - Green: Credits (e.g., Energy Credit from oxidation).
-   - Red: Penalties (e.g., Copper Dilution if exceeding target).
-   - Blue highlight: VIU Cost/NT (key metric).
-
-5. **Export:** Download CSV for further analysis (e.g., in Excel).
+- The table shows columns for each material and the blend.
+- Green: Credits (e.g., Energy Credit from oxidation).
+- Red: Penalties (e.g., Copper Dilution if exceeding target).
+- Blue highlight: VIU Cost/NT (key metric).
 
 ### Example Workflow
 
 - **Scenario:** Compare $350/ton scrap (0.4% Cu, 0.025% P) vs. $450/ton DRI (0.01% Cu, 0.008% P) at 50% blend.
 - **Inputs:** Set targets (0.10% Cu max), add materials.
-- **Output:** Table shows scrap's high dilution penalty ($50) vs. DRI's none, blended VIU ~$1663/NT with 87.8% yield.
-- **Insight:** Despite higher base price, DRI's VIU may be lower due to no dilution and better yield.
-
-For advanced users, modify code to add custom penalties (e.g., environmental costs).
+- **Output:** The table will show the scrap's high dilution penalty versus the DRI's, along with the blended VIU and yield.
+- **Insight:** Despite its higher base price, the DRI's VIU may be lower due to the absence of a dilution penalty and better yield.
 
 ## Technical Details
 
@@ -162,9 +177,9 @@ The model is rooted in EAF thermodynamics, using mass/energy balances to simulat
 - **Productivity:** Tap-to-tap time = base + charging (density-based) + refining (excess C/P/S, limited to 0.1% C/min to avoid splashing).
 
 - **Equations:**
-  - Energy Credit: \( E = \frac{-\Delta H \times m / M_w \times \eta}{3600} \) kWh.
-  - Slag Flux: Required CaO = basicity × SiO2 - gangue CaO.
-  - VIU Normalization: Cost/NT = Total Cost / (Yield / 100).
+- Energy Credit: \( E = \frac{-\Delta H \times m / M_w \times \eta}{3600} \) kWh.
+- Slag Flux: Required CaO = basicity × SiO2 - gangue CaO.
+- VIU Normalization: Cost/NT = Total Cost / (Yield / 100).
 
 The model assumes steady-state equilibrium, calibrated from papers (e.g., Pfeifer/Kirschen balances, Jones VIU).
 
@@ -176,77 +191,55 @@ The model assumes steady-state equilibrium, calibrated from papers (e.g., Pfeife
 - **Yield/FeO:** Empirical (20% base, adjusted by slag vol/C); Fe-dominant (ignores minor alloys).
 - **Residuals:** Only Cu/Sn diluted; P/S as flat penalties (customizable).
 - **Limitations:** No real-time integration; no CO2 emissions; assumes 100-ton furnace (scalable).
-- **Validation:** Cross-checks with Köhle's model; calibrate with plant data for accuracy (±5-10% typical).
-
-Sensitivity: 1% met change = ~2.5% yield shift; test via code modifications.
 
 ## For Future Software Development
 
 ### Code Structure and Extensibility
 
-- **Modular Design:** Core functions (e.g., `compute_viu`) separate from UI; easy to add reactions (e.g., Cr oxidation) by extending constants/calculations.
-- **Data Flow:** Session state for materials; pandas for tables; numpy for math.
+- **Modular Design:** Core functions (e.g., `compute_viu`) are separate from the API; easy to add reactions by extending constants/calculations.
+- **Data Flow:** The frontend manages the UI state, while the backend handles calculations and data storage (in-memory).
 - **Extensibility Points:**
-  - Add elements: Extend dict keys in material form and mass balance.
-  - Dynamic Modeling: Integrate ODEs for time-varying reactions (e.g., via scipy).
-  - API Integration: Fetch market prices via web APIs (add requests lib).
-  - ML Enhancements: Use scikit-learn for predictive yield from historical data.
-- **Best Practices:** PEP8 compliant; comments throughout; virtualenv for deps.
-- **Testing:** Add unit tests (pytest) for balances; validate against literature benchmarks.
-- **Deployment:** Host on Streamlit Sharing or Heroku; Dockerize for reproducibility.
+- Add elements: Extend the material form and the mass balance calculations.
+- Dynamic Modeling: Integrate ODEs for time-varying reactions.
+- API Integration: Fetch market prices via web APIs.
+- ML Enhancements: Use machine learning for predictive yield from historical data.
+- **Deployment:** The application is designed to be deployed on Vercel.
 
 ### Potential Enhancements
 
-- **UI/UX:** Add charts (e.g., cost pies via matplotlib); multi-material blends; save/load configs (JSON).
-- **Advanced Physics:** Kinetic rates; full off-gas modeling (e.g., H2O from burners); heat transfer efficiencies.
-- **Sustainability:** Carbon footprint calc (e.g., Scope 3 emissions from feeds).
-- **Scalability:** Parallel processing for scenarios (multiprocessing); cloud integration (AWS for large sims).
-- **Interoperability:** Export to Excel/CSV; import from plant databases (SQL connectors).
-
-Track issues on GitHub for community-driven dev.
+- **UI/UX:** Add charts for cost breakdowns; allow for multi-material blends; save/load configurations.
+- **Advanced Physics:** Incorporate kinetic rates and full off-gas modeling.
+- **Sustainability:** Calculate the carbon footprint of different material mixes.
+- **Scalability:** Use a more robust database for storing materials and results.
 
 ## Financial Analysis Improvements
 
 ### Current Financial Capabilities
 
-- **Core VIU:** Adjusts costs for operational impacts, outputting $/NT with breakdowns (e.g., $50 dilution penalty).
-- **Sensitivity:** Tweak inputs (e.g., electricity price) to see effects; blend ratios for optimization.
+- **Core VIU:** Adjusts costs for operational impacts, outputting $/NT with breakdowns.
+- **Sensitivity Analysis:** Tweak inputs to see the effects on the VIU; adjust blend ratios for optimization.
 
 ### Advanced Financial Extensions
 
-- **NPV/ROI for Investments:** Add modules for capex (e.g., new burners) vs. opex savings; use numpy-financial for NPV calc: NPV = ∑ (Cash Flows / (1 + r)^t) - Initial Investment.
-- **Monte Carlo Simulations:** Model price volatility (e.g., scrap $350±50); use numpy.random for 1000+ runs, output risk distributions.
-- **Scenario Forecasting:** Integrate market APIs for real-time prices; predict annual savings for feed switches.
-- **Break-Even Analysis:** Solve for price thresholds where VIU equals (e.g., via sympy solvers).
-- **Integration with ERP:** Export to formats for SAP/Oracle; add ROI for sustainability (e.g., carbon tax penalties).
-- **Custom Metrics:** Add EBITDA impacts, payback periods; visualize with Altair/Plotly for interactive dashboards.
-
-These would elevate the tool from tactical to strategic financial planning.
+- **NPV/ROI for Investments:** Add modules to evaluate the return on investment for capital expenditures.
+- **Monte Carlo Simulations:** Model price volatility to understand risk.
+- **Scenario Forecasting:** Integrate market data APIs for real-time price information.
+- **Break-Even Analysis:** Determine the price thresholds at which different materials become economically viable.
 
 ## Contributing
 
-Contributions welcome! Fork the repo, create a feature branch, and submit a PR. Follow these steps:
-
-1. Fork and clone.
-2. Install deps and run tests.
-3. Commit with clear messages.
-4. PR with description of changes.
-
-Report bugs via GitHub Issues. Adhere to code of conduct.
+Contributions are welcome! Fork the repository, create a feature branch, and submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments and References
 
-- Inspired by papers: Abraham/Chen (2007) on balances; Pfeifer/Kirschen on efficiency; Jones (1998) on VIU.
-- Libraries: Streamlit, Pandas, NumPy.
-- Data Sources: Thermodynamic constants from NIST/engineering handbooks.
-- Thanks to steelmaking community for open knowledge.
-
-For citations: Use repo URL and version.
+- Inspired by the work of A. Abraham, S. Chen, H. Pfeifer, M. Kirschen, and J. Jones.
+- Libraries: Next.js, React, Flask, pandas, numpy.
+- Data Sources: Thermodynamic constants from NIST and engineering handbooks.
 
 ## Contact
 
-For questions, reach out via GitHub Issues or email [your.email@example.com]. Follow for updates!
+For questions or feedback, please open an issue on GitHub.
